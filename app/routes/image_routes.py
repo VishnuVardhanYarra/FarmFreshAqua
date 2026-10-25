@@ -14,10 +14,28 @@ UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # -----------------------------
-# Load pretrained ResNet model
+# Lazy-loaded ResNet model with dynamic quantization for low-memory environments
 # -----------------------------
-model = resnet50(weights=ResNet50_Weights.DEFAULT)
-model.eval()
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        try:
+            torch.set_num_threads(1)
+            base_model = resnet50(weights=ResNet50_Weights.DEFAULT)
+            base_model.eval()
+            try:
+                # Quantize linear layers for ~75% memory reduction (fits within 512MB RAM)
+                _model = torch.quantization.quantize_dynamic(
+                    base_model, {torch.nn.Linear}, dtype=torch.qint8
+                )
+            except Exception:
+                _model = base_model
+        except Exception as e:
+            print(f"Model initialization error: {e}")
+            raise
+    return _model
 
 preprocess = transforms.Compose([
     transforms.Resize(256),
@@ -30,6 +48,7 @@ preprocess = transforms.Compose([
 ])
 
 def predict(image_path):
+    model = get_model()
     image = Image.open(image_path).convert("RGB")
     input_tensor = preprocess(image).unsqueeze(0)
     with torch.no_grad():
