@@ -3,8 +3,9 @@ title: FarmFreshAqua API
 emoji: 🦐
 colorFrom: blue
 colorTo: green
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 5.20.0
+app_file: app.py
 pinned: false
 ---
 
@@ -14,17 +15,17 @@ A full-stack aquaculture platform providing prawn disease detection with deep le
 
 ## Architecture
 
-- **Backend**: FastAPI with PyTorch & torchvision (ResNet-50)
+- **Backend**: FastAPI mounted with Gradio UI, PyTorch & torchvision (ResNet-50)
 - **Frontend**: React (Vite)
 - **Database**: PostgreSQL (Neon Serverless Postgres)
 - **Hosting**:
-  - Backend: Hugging Face Spaces (Docker, 2 vCPU, 16GB RAM - 100% Free)
-  - Frontend: Vercel / Render Static Site (100% Free)
+  - Backend: Hugging Face Spaces (Gradio SDK, 2 vCPU, 16GB RAM - 100% Free with zero payment)
+  - Frontend: Vercel (100% Free)
   - Database: Neon.tech (100% Free forever)
 
 ## API Endpoints
 
-- `GET /` - Root status
+- `GET /` - Gradio UI and interactive API status
 - `GET /health` - Health check endpoint
 - `POST /auth/register` - User registration (farmer / buyer)
 - `POST /auth/login` - User authentication (JWT)
