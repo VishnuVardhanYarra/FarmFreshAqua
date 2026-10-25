@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, DateTime
+from sqlalchemy import Column, Integer, String, Date, Float, DateTime
 from sqlalchemy.sql import func
 from .database import Base
 
@@ -10,10 +10,10 @@ class Farmer(Base):
     phone = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, nullable=False)
     password_hash = Column(String, nullable=False)
-    acres = Column(Integer, nullable=False)
-    crop_start_date = Column(Date, nullable=False)
-    yield_date = Column(Date, nullable=False)
-    health_condition = Column(String, nullable=False)
+    acres = Column(Float, nullable=True, default=0.0)
+    crop_start_date = Column(Date, nullable=True)
+    yield_date = Column(Date, nullable=True)
+    health_condition = Column(String, nullable=True)
     role = Column(String, default="farmer", nullable=True)
 
 class Image(Base):
