@@ -41,9 +41,9 @@ try:
                 email="suresh.buyer@example.com",
                 password_hash=hash_password("demo123"),
                 acres=0.0,
-                crop_start_date="",
-                yield_date="",
-                health_condition="",
+                crop_start_date=None,
+                yield_date=None,
+                health_condition="N/A",
                 role="buyer"
             )
             db_seed.add(demo_buyer)

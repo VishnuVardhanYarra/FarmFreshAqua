@@ -14,14 +14,17 @@ def register_farmer(farmer: schemas.FarmerCreate, db: Session = Depends(database
 
     hashed_password = auth.hash_password(farmer.password)
     role = getattr(farmer, "role", "farmer") or "farmer"
+    crop_start = farmer.crop_start_date if farmer.crop_start_date and str(farmer.crop_start_date).strip() else None
+    yield_dt = farmer.yield_date if farmer.yield_date and str(farmer.yield_date).strip() else None
+
     new_farmer = models.Farmer(
         name=farmer.name.strip(),
         phone=phone_clean,
         email=farmer.email.strip(),
         password_hash=hashed_password,
         acres=farmer.acres,
-        crop_start_date=farmer.crop_start_date,
-        yield_date=farmer.yield_date,
+        crop_start_date=crop_start,
+        yield_date=yield_dt,
         health_condition=farmer.health_condition,
         role=role
     )
