@@ -17,6 +17,40 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 # Create DB tables
 try:
     models.Base.metadata.create_all(bind=database.engine)
+    # Seed default demo accounts if not present
+    try:
+        from app.auth import hash_password
+        db_seed = database.SessionLocal()
+        if not db_seed.query(models.Farmer).filter(models.Farmer.phone == "9876543210").first():
+            demo_farmer = models.Farmer(
+                name="Ramesh Kumar (Demo Farmer)",
+                phone="9876543210",
+                email="ramesh.farmer@example.com",
+                password_hash=hash_password("demo123"),
+                acres=5.5,
+                crop_start_date="2025-01-10",
+                yield_date="2025-05-15",
+                health_condition="Healthy",
+                role="farmer"
+            )
+            db_seed.add(demo_farmer)
+        if not db_seed.query(models.Farmer).filter(models.Farmer.phone == "9123456780").first():
+            demo_buyer = models.Farmer(
+                name="Suresh Exports (Demo Buyer)",
+                phone="9123456780",
+                email="suresh.buyer@example.com",
+                password_hash=hash_password("demo123"),
+                acres=0.0,
+                crop_start_date="",
+                yield_date="",
+                health_condition="",
+                role="buyer"
+            )
+            db_seed.add(demo_buyer)
+        db_seed.commit()
+        db_seed.close()
+    except Exception as seed_err:
+        print(f"Notice: Demo user seeding skipped or existing: {seed_err}")
 except Exception as e:
     print(f"Warning: Database initialization error: {e}")
 
@@ -59,10 +93,11 @@ else:
     # If not specified, allow defaults plus wildcard in development
     origins = ["*"] if os.getenv("ENVIRONMENT") != "production" else default_origins
 
+is_wildcard = "*" in origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"] if is_wildcard else origins,
+    allow_credentials=not is_wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
 )
