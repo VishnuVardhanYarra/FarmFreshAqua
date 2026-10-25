@@ -1,4 +1,4 @@
-# FarmFreshAqua
+# FarmFreshAqua- Maximise profits of farming and Reliability of seller
 
 A full-stack aquaculture platform providing prawn disease detection with deep learning (PyTorch ResNet-50), water quality monitoring, market linkage, and farmer dashboards.
 
