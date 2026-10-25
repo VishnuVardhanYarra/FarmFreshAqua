@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AquaScan - Prawn Disease Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --secondary: #0ea5e9;
+        --accent: #22d3ee;
+        --light: #f8fafc;
+        --dark: #0f172a;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-600: #475569;
+        --gray-800: #1e293b;
+        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --radius: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header Styles */
+      header {
+        background-color: white;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+
+      .logo-icon {
+        color: var(--secondary);
+        font-size: 1.8rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--gray-600);
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .nav-links a.active {
+        color: var(--primary);
+        position: relative;
+      }
+
+      .nav-links a.active::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary);
+        border-radius: 2px;
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 4rem 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+      }
+
+      .hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  background-clip: text;           /* Standard */
+  -webkit-background-clip: text;   /* Safari / old Chrome */
+  -webkit-text-fill-color: transparent;
+  color: transparent;              /* fallback */
+  line-height: 1.2;
+}
+
+
+      .hero p {
+        font-size: 1.2rem;
+        color: var(--gray-600);
+        max-width: 700px;
+      }
+
+      .cta-button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: var(--radius);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        box-shadow: var(--shadow);
+      }
+
+      .cta-button:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      /* Main Content */
+      .main-content {
+        padding: 2rem 0 4rem;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2rem;
+        color: var(--gray-800);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-icon {
+        background-color: var(--light);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        font-size: 1.5rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: var(--gray-800);
+      }
+
+      .feature-card p {
+        color: var(--gray-600);
+      }
+
+      /* Upload Section */
+      .upload-section {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 3rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 4rem;
+        text-align: center;
+      }
+
+      .upload-area {
+        border: 2px dashed var(--gray-300);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        margin: 2rem 0;
+        cursor: pointer;
+        transition: border-color 0.3s, background-color 0.3s;
+      }
+
+      .upload-area:hover {
+        border-color: var(--primary);
+        background-color: var(--gray-100);
+      }
+
+      .upload-icon {
+        font-size: 3rem;
+        color: var(--gray-300);
+        margin-bottom: 1rem;
+      }
+
+      .upload-text {
+        color: var(--gray-600);
+      }
+
+      .upload-text span {
+        color: var(--primary);
+        font-weight: 500;
+      }
+
+      /* Results Section */
+      .results-section {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 3rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 4rem;
+      }
+
+      .result-placeholder {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray-600);
+        font-style: italic;
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--gray-800);
+        color: white;
+        padding: 3rem 0;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .footer-column h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: white;
+      }
+
+      .footer-column ul {
+        list-style: none;
+      }
+
+      .footer-column ul li {
+        margin-bottom: 0.8rem;
+      }
+
+      .footer-column a {
+        color: var(--gray-300);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-column a:hover {
+        color: white;
+      }
+
+      .copyright {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--gray-600);
+        color: var(--gray-300);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+        
+        .nav-links {
+          display: none;
+        }
+        
+        .upload-section, .results-section {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <span class="logo-icon">🦐</span>
+            <span>AquaScan</span>
+          </div>
+          <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">Detection</a>
+            <a href="#">Analysis</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h1>Advanced Prawn Disease Detection</h1>
+          <p>Utilize AI-powered technology to quickly identify and diagnose diseases in your prawn population with over 95% accuracy.</p>
+          <button class="cta-button">Start Detection</button>
+        </div>
+      </section>
+
+      <section class="main-content">
+        <div class="container">
+          <h2 class="section-title">How It Works</h2>
+          
+          <div class="features">
+            <div class="feature-card">
+              <div class="feature-icon">📸</div>
+              <h3>Upload Image</h3>
+              <p>Capture a clear image of your prawn and upload it to our secure system for analysis.</p>
+            </div>
+            
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h3>AI Analysis</h3>
+              <p>Our advanced neural networks examine the image for signs of common prawn diseases.</p>
+            </div>
+            
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Get Results</h3>
+              <p>Receive detailed diagnosis, confidence levels, and recommended treatment options.</p>
+            </div>
+          </div>
+
+          <div class="upload-section">
+            <h2>Detect Prawn Diseases</h2>
+            <p>Upload an image of your prawn for instant analysis</p>
+            
+            <div class="upload-area">
+              <div class="upload-icon">📁</div>
+              <p class="upload-text">Drag & drop your image here or <span>browse files</span></p>
+            </div>
+            
+            <button class="cta-button">Analyze Image</button>
+          </div>
+
+          <div class="results-section">
+            <h2>Analysis Results</h2>
+            <div class="result-placeholder">
+              <p>Upload an image to see the analysis results here</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>AquaScan</h3>
+            <p>Advanced AI technology for sustainable aquaculture and prawn health monitoring.</p>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">How It Works</a></li>
+              <li><a href="#">Disease Library</a></li>
+              <li><a href="#">Pricing</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">Prawn Care Guide</a></li>
+              <li><a href="#">Disease Prevention</a></li>
+              <li><a href="#">Research Papers</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Contact Us</h3>
+            <ul>
+              <li><a href="#">support@aquascan.com</a></li>
+              <li><a href="#">+1 (555) 123-4567</a></li>
+              <li><a href="#">Feedback</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="copyright">
+          <p>&copy; 2023 AquaScan Prawn Disease Detection. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Simple interaction for the upload area
+      document.addEventListener('DOMContentLoaded', function() {
+        const uploadArea = document.querySelector('.upload-area');
+        const ctaButton = document.querySelector('.cta-button');
+        
+        if (uploadArea) {
+          uploadArea.addEventListener('click', function() {
+            alert('Image upload functionality would be implemented here with your framework of choice.');
+          });
+        }
+        
+        if (ctaButton) {
+          ctaButton.addEventListener('click', function() {
+            alert('Image analysis would begin here with connection to your backend API.');
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
