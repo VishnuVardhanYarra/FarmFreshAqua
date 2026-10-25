@@ -1,9 +1,11 @@
 import os
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 
 load_dotenv()
 
@@ -55,6 +57,15 @@ except Exception as e:
     print(f"Warning: Database initialization error: {e}")
 
 app = FastAPI(title="Farm Fresh Aqua API - Prawn Disease Detection")
+
+# Middleware to collapse duplicate slashes (e.g. //auth/login -> /auth/login)
+class NormalizePathMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        if "//" in request.scope.get("path", ""):
+            request.scope["path"] = re.sub(r"/+", "/", request.scope["path"])
+        return await call_next(request)
+
+app.add_middleware(NormalizePathMiddleware)
 
 # Mount uploads folder for static access
 app.mount("/static", StaticFiles(directory="uploads"), name="static")
