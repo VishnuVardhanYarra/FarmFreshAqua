@@ -1,4 +1,4 @@
-# FarmFreshAqua - Smart Aquaculture Disease Detection & Farmer Platform
+# FarmFreshAqua
 
 A full-stack aquaculture platform providing prawn disease detection with deep learning (PyTorch ResNet-50), water quality monitoring, market linkage, and farmer dashboards.
 
@@ -8,9 +8,9 @@ A full-stack aquaculture platform providing prawn disease detection with deep le
 - **Frontend**: React (Vite)
 - **Database**: PostgreSQL (Neon Serverless Postgres)
 - **Deployment**:
-  - Backend: Render Native Python Web Service (Free Tier, No Credit Card)
-  - Frontend: Vercel or Render Static Site (Free Tier, No Credit Card)
-  - Database: Neon.tech PostgreSQL (Free Tier, No Credit Card)
+  - Backend: Render Native Python Web Service 
+  - Frontend: Vercel
+  - Database: Neon.tech PostgreSQL
 
 ## API Endpoints
 
