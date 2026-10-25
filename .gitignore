@@ -46,3 +46,4 @@ desktop.ini
 *.log
 *.sqlite
 *.sqlite3
+.pytest_cache/

@@ -88,8 +88,8 @@ def health_check():
     return {"status": "healthy"}
 
 # CORS Configuration
-# Supports comma-separated ALLOWED_ORIGINS env variable
 default_origins = [
+    "https://farm-fresh-aqua.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -101,13 +101,13 @@ if env_origins:
     configured_origins = [o.strip() for o in env_origins.split(",") if o.strip()]
     origins = list(set(default_origins + configured_origins))
 else:
-    # If not specified, allow defaults plus wildcard in development
-    origins = ["*"] if os.getenv("ENVIRONMENT") != "production" else default_origins
+    origins = default_origins
 
 is_wildcard = "*" in origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"] if is_wildcard else origins,
+    allow_origin_regex=r"^https:\/\/.*\.vercel\.app$" if not is_wildcard else None,
     allow_credentials=not is_wildcard,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -7,9 +7,8 @@ export const analyzeImage = async (file) => {
   formData.append("file", file);
 
   try {
-    const res = await axios.post(`${API_URL}/images/predict`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // Let browser/Axios set Content-Type with the multipart boundary automatically
+    const res = await axios.post(`${API_URL}/images/predict`, formData);
     return res.data;
   } catch (error) {
     console.error("Image analysis failed:", error);
